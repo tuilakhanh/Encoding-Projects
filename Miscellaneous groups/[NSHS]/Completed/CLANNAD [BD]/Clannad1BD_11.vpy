@@ -14,7 +14,7 @@ from vsutil import depth, get_y, insert_clip, join, plane
 import vapoursynth as vs
 
 core = vs.core
-core.max_cache_size = 1024 * 128
+core.max_cache_size = 1024 * 224
 core.num_threads = 12
 
 
@@ -50,7 +50,7 @@ def fix_lineart(clip: vs.VideoNode) -> vs.VideoNode:
         A function that performs HQDeringmod with a repair on the lineart.
     """
     dering = lvf.util.quick_resample(
-        aa, partial(haf.HQDeringmod, nrmode=1, mrad=2, thr=3, sharp=0)
+        clip, partial(haf.HQDeringmod, nrmode=1, mrad=2, thr=3, sharp=0)
     )
     return lvf.util.pick_repair(dering)(dering, clip, 13)
 
@@ -124,7 +124,8 @@ if edstart is not None:
 
 
 # GER BD is overall of higher quality, but replaced quite a few signs
-src = lvf.misc.replace_ranges(src_ger, src_jp, ranges=JP_signs)
+#src = lvf.misc.replace_ranges(src_ger, src_jp, ranges=JP_signs)
+src = src_jp
 
 op_mask = DCM(src, src[opstart:opstart+2154], src_NCOP, opstart, opstart+src_NCOP.num_frames) \
     if opstart is not None else core.std.BlankClip(src)

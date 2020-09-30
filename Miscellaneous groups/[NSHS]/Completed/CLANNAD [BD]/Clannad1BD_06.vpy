@@ -14,7 +14,7 @@ from vsutil import depth, get_y, insert_clip, join, plane
 import vapoursynth as vs
 
 core = vs.core
-core.max_cache_size = 1024 * 128
+core.max_cache_size = 1024 * 224
 core.num_threads = 12
 
 
@@ -50,7 +50,7 @@ def fix_lineart(clip: vs.VideoNode) -> vs.VideoNode:
         A function that performs HQDeringmod with a repair on the lineart.
     """
     dering = lvf.util.quick_resample(
-        aa, partial(haf.HQDeringmod, nrmode=1, mrad=2, thr=3, sharp=0)
+        clip, partial(haf.HQDeringmod, nrmode=1, mrad=2, thr=3, sharp=0)
     )
     return lvf.util.pick_repair(dering)(dering, clip, 13)
 
@@ -101,7 +101,7 @@ fade_fix = []
 interp_scene = []
 
 # Replace GER signs with JP Signs
-aa_credits = []
+aa_credits = [(3497, 3592), (31776, 31883), (34042, 34187), (34637, 34757)]
 JP_signs = [(0, 53), (3497, 3592), (5376, 5460), (5875, 5907), (5932, 5977), (6028, 6078), (6127, 6174), (6872, 7342), (10367, 10401), (10637, 10726), (11328, 11396), (24093, 24219), (29884, 29931), (31776, 31883), (34042, 34187), (34637, 34757)]
 
 # First OP & ED frames
@@ -208,4 +208,4 @@ grain = kgf.adaptive_grain(fade, 0.45, luma_scaling=4)
 out = grain
 final = depth(out, 10)
 #diff = lvf.comparison.tvbd_diff(src, src_jp, thr=96)
-final.set_output()
+src_ger.set_output()
